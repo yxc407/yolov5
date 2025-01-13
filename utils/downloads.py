@@ -68,8 +68,8 @@ def attempt_download(file, repo='ultralytics/yolov5', release='v6.2'):
 
     def github_assets(repository, version='latest'):
         # Return GitHub repo tag (i.e. 'v6.2') and assets (i.e. ['yolov5s.pt', 'yolov5m.pt', ...])
-        if version != 'latest':
-            version = f'tags/{version}'  # i.e. tags/v6.2
+        # if version != 'latest':
+        version = f'tags/v6.2'  # i.e. tags/v6.2
         response = requests.get(f'https://api.github.com/repos/{repository}/releases/{version}').json()  # github api
         return response['tag_name'], [x['name'] for x in response['assets']]  # tag, assets
 

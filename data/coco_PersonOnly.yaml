@@ -1,0 +1,13 @@
+train: datasets/coco_PersonOnly/train/images
+val: datasets/coco_PersonOnly/valid/images
+test: datasets/coco_PersonOnly/test/images
+
+nc: 1
+names: ['person']
+
+roboflow:
+  workspace: shreks-swamp
+  project: coco-dataset-limited--person-only
+  version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/shreks-swamp/coco-dataset-limited--person-only/dataset/1

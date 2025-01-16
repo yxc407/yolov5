@@ -9,7 +9,11 @@ import threading
 
 class TryExcept(contextlib.ContextDecorator):
     # YOLOv5 TryExcept class. Usage: @TryExcept() decorator or 'with TryExcept():' context manager
+<<<<<<< HEAD
     def __init__(self, msg='default message here'):
+=======
+    def __init__(self, msg=''):
+>>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
         self.msg = msg
 
     def __enter__(self):
@@ -17,7 +21,11 @@ class TryExcept(contextlib.ContextDecorator):
 
     def __exit__(self, exc_type, value, traceback):
         if value:
+<<<<<<< HEAD
             print(f'{self.msg}: {value}')
+=======
+            print(f'{self.msg}{value}')
+>>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
         return True
 
 

@@ -17,6 +17,10 @@ Usage - formats:
                                        yolov5s-cls.pb                 # TensorFlow GraphDef
                                        yolov5s-cls.tflite             # TensorFlow Lite
                                        yolov5s-cls_edgetpu.tflite     # TensorFlow Edge TPU
+<<<<<<< HEAD
+=======
+                                       yolov5s-cls_paddle_model       # PaddlePaddle
+>>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
 """
 
 import argparse

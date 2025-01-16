@@ -17,6 +17,10 @@ import signal
 import sys
 import time
 import urllib
+<<<<<<< HEAD
+=======
+from copy import deepcopy
+>>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
 from datetime import datetime
 from itertools import repeat
 from multiprocessing.pool import ThreadPool
@@ -217,6 +221,7 @@ def print_args(args: Optional[dict] = None, show_file=True, show_func=False):
 
 def init_seeds(seed=0, deterministic=False):
     # Initialize random number generator (RNG) seeds https://pytorch.org/docs/stable/notes/randomness.html
+<<<<<<< HEAD
     # cudnn seed 0 settings are slower and more reproducible, else faster and less reproducible
     import torch.backends.cudnn as cudnn
 
@@ -231,6 +236,19 @@ def init_seeds(seed=0, deterministic=False):
     cudnn.benchmark, cudnn.deterministic = (False, True) if seed == 0 else (True, False)
     torch.cuda.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)  # for Multi-GPU, exception safe
+=======
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)  # for Multi-GPU, exception safe
+    torch.backends.cudnn.benchmark = True  # for faster training
+    if deterministic and check_version(torch.__version__, '1.12.0'):  # https://github.com/ultralytics/yolov5/pull/8213
+        torch.use_deterministic_algorithms(True)
+        torch.backends.cudnn.deterministic = True
+        os.environ['CUBLAS_WORKSPACE_CONFIG'] = ':4096:8'
+        os.environ['PYTHONHASHSEED'] = str(seed)
+>>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
 
 
 def intersect_dicts(da, db, exclude=()):
@@ -335,15 +353,22 @@ def check_version(current='0.0.0', minimum='0.0.0', name='version ', pinned=Fals
     # Check version vs. required version
     current, minimum = (pkg.parse_version(x) for x in (current, minimum))
     result = (current == minimum) if pinned else (current >= minimum)  # bool
+<<<<<<< HEAD
     s = f'{name}{minimum} required by YOLOv5, but {name}{current} is currently installed'  # string
     if hard:
         assert result, s  # assert min requirements met
+=======
+    s = f'WARNING: ⚠️ {name}{minimum} is required by YOLOv5, but {name}{current} is currently installed'  # string
+    if hard:
+        assert result, emojis(s)  # assert min requirements met
+>>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
     if verbose and not result:
         LOGGER.warning(s)
     return result
 
 
 @TryExcept()
+<<<<<<< HEAD
 def check_requirements(requirements=ROOT / 'requirements.txt', exclude=(), install=True, cmds=()):
     # Check installed dependencies meet YOLOv5 requirements (pass *.txt file or list of packages)
     prefix = colorstr('red', 'bold', 'requirements:')
@@ -378,6 +403,40 @@ def check_requirements(requirements=ROOT / 'requirements.txt', exclude=(), insta
         s = f"{prefix} {n} package{'s' * (n > 1)} updated per {source}\n" \
             f"{prefix} ⚠️ {colorstr('bold', 'Restart runtime or rerun command for updates to take effect')}\n"
         LOGGER.info(s)
+=======
+def check_requirements(requirements=ROOT / 'requirements.txt', exclude=(), install=True, cmds=''):
+    # Check installed dependencies meet YOLOv5 requirements (pass *.txt file or list of packages or single package str)
+    prefix = colorstr('red', 'bold', 'requirements:')
+    check_python()  # check python version
+    if isinstance(requirements, Path):  # requirements.txt file
+        file = requirements.resolve()
+        assert file.exists(), f"{prefix} {file} not found, check failed."
+        with file.open() as f:
+            requirements = [f'{x.name}{x.specifier}' for x in pkg.parse_requirements(f) if x.name not in exclude]
+    elif isinstance(requirements, str):
+        requirements = [requirements]
+
+    s = ''
+    n = 0
+    for r in requirements:
+        try:
+            pkg.require(r)
+        except (pkg.VersionConflict, pkg.DistributionNotFound):  # exception if requirements not met
+            s += f'"{r}" '
+            n += 1
+
+    if s and install and AUTOINSTALL:  # check environment variable
+        LOGGER.info(f"{prefix} YOLOv5 requirement{'s' * (n > 1)} {s}not found, attempting AutoUpdate...")
+        try:
+            assert check_online(), "AutoUpdate skipped (offline)"
+            LOGGER.info(check_output(f'pip install {s} {cmds}', shell=True).decode())
+            source = file if 'file' in locals() else requirements
+            s = f"{prefix} {n} package{'s' * (n > 1)} updated per {source}\n" \
+                f"{prefix} ⚠️ {colorstr('bold', 'Restart runtime or rerun command for updates to take effect')}\n"
+            LOGGER.info(s)
+        except Exception as e:
+            LOGGER.warning(f'{prefix} {e}')
+>>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
 
 
 def check_img_size(imgsz, s=32, floor=0):
@@ -540,7 +599,11 @@ def check_amp(model):
     f = ROOT / 'data' / 'images' / 'bus.jpg'  # image to check
     im = f if f.exists() else 'https://ultralytics.com/images/bus.jpg' if check_online() else np.ones((640, 640, 3))
     try:
+<<<<<<< HEAD
         assert amp_allclose(model, im) or amp_allclose(DetectMultiBackend('yolov5n.pt', device), im)
+=======
+        assert amp_allclose(deepcopy(model), im) or amp_allclose(DetectMultiBackend('yolov5n.pt', device), im)
+>>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
         LOGGER.info(f'{prefix}checks passed ✅')
         return True
     except Exception:
@@ -816,6 +879,12 @@ def non_max_suppression(prediction,
          list of detections, on (n,6) tensor per image [xyxy, conf, cls]
     """
 
+<<<<<<< HEAD
+=======
+    if isinstance(prediction, (list, tuple)):  # YOLOv5 model in validation model, output = (inference_out, loss_out)
+        prediction = prediction[0]  # select only inference output
+
+>>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
     bs = prediction.shape[0]  # batch size
     nc = prediction.shape[2] - 5  # number of classes
     xc = prediction[..., 4] > conf_thres  # candidates

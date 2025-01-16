@@ -251,6 +251,10 @@ def fuse_conv_and_bn(conv, bn):
                           kernel_size=conv.kernel_size,
                           stride=conv.stride,
                           padding=conv.padding,
+<<<<<<< HEAD
+=======
+                          dilation=conv.dilation,
+>>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
                           groups=conv.groups,
                           bias=True).requires_grad_(False).to(conv.weight.device)
 

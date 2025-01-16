@@ -43,7 +43,11 @@ repos:
         name: YAPF formatting
 
   - repo: https://github.com/executablebooks/mdformat
+<<<<<<< HEAD
     rev: 0.7.14
+=======
+    rev: 0.7.16
+>>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
     hooks:
       - id: mdformat
         name: MD formatting
@@ -53,12 +57,20 @@ repos:
         exclude: "README.md|README_cn.md"
 
   - repo: https://github.com/asottile/yesqa
+<<<<<<< HEAD
     rev: v1.3.0
+=======
+    rev: v1.4.0
+>>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
     hooks:
       - id: yesqa
 
   - repo: https://github.com/PyCQA/flake8
+<<<<<<< HEAD
     rev: 5.0.2
+=======
+    rev: 5.0.4
+>>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
     hooks:
       - id: flake8
         name: PEP8

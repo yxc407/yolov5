@@ -364,7 +364,11 @@ def plot_labels(labels, names=(), save_dir=Path('')):
     ax[0].set_ylabel('instances')
     if 0 < len(names) < 30:
         ax[0].set_xticks(range(len(names)))
+<<<<<<< HEAD
         ax[0].set_xticklabels(names, rotation=90, fontsize=10)
+=======
+        ax[0].set_xticklabels(list(names.values()), rotation=90, fontsize=10)
+>>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
     else:
         ax[0].set_xlabel('classes')
     sn.histplot(x, x='x', y='y', ax=ax[2], bins=50, pmax=0.9)

@@ -33,15 +33,6 @@ def gsutil_getsize(url=''):
     return eval(s.split(' ')[0]) if len(s) else 0  # bytes
 
 
-<<<<<<< HEAD
-=======
-def url_getsize(url='https://ultralytics.com/images/bus.jpg'):
-    # Return downloadable file size in bytes
-    response = requests.head(url, allow_redirects=True)
-    return int(response.headers.get('content-length', -1))
-
-
->>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
 def safe_download(file, url, url2=None, min_bytes=1E0, error_msg=''):
     # Attempts to download file from url or url2, checks and removes incomplete downloads < min_bytes
     from utils.general import LOGGER
@@ -53,22 +44,12 @@ def safe_download(file, url, url2=None, min_bytes=1E0, error_msg=''):
         torch.hub.download_url_to_file(url, str(file), progress=LOGGER.level <= logging.INFO)
         assert file.exists() and file.stat().st_size > min_bytes, assert_msg  # check
     except Exception as e:  # url2
-<<<<<<< HEAD
         file.unlink(missing_ok=True)  # remove partial downloads
-=======
-        if file.exists():
-            file.unlink()  # remove partial downloads
->>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
         LOGGER.info(f'ERROR: {e}\nRe-attempting {url2 or url} to {file}...')
         os.system(f"curl -# -L '{url2 or url}' -o '{file}' --retry 3 -C -")  # curl download, retry and resume on fail
     finally:
         if not file.exists() or file.stat().st_size < min_bytes:  # check
-<<<<<<< HEAD
             file.unlink(missing_ok=True)  # remove partial downloads
-=======
-            if file.exists():
-                file.unlink()  # remove partial downloads
->>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
             LOGGER.info(f"ERROR: {assert_msg}\n{error_msg}")
         LOGGER.info('')
 
@@ -79,13 +60,8 @@ def attempt_download(file, repo='ultralytics/yolov5', release='v6.2'):
 
     def github_assets(repository, version='latest'):
         # Return GitHub repo tag (i.e. 'v6.2') and assets (i.e. ['yolov5s.pt', 'yolov5m.pt', ...])
-<<<<<<< HEAD
         if version != 'latest':
             version = f'tags/{version}'  # i.e. tags/v6.2
-=======
-        # if version != 'latest':
-        version = f'tags/v6.2'  # i.e. tags/v6.2
->>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
         response = requests.get(f'https://api.github.com/repos/{repository}/releases/{version}').json()  # github api
         return response['tag_name'], [x['name'] for x in response['assets']]  # tag, assets
 
@@ -136,15 +112,8 @@ def gdrive_download(id='16TiPfZj7htmTyhntwcZyEEAejOUxuT6m', file='tmp.zip'):
     file = Path(file)
     cookie = Path('cookie')  # gdrive cookie
     print(f'Downloading https://drive.google.com/uc?export=download&id={id} as {file}... ', end='')
-<<<<<<< HEAD
     file.unlink(missing_ok=True)  # remove existing file
     cookie.unlink(missing_ok=True)  # remove existing cookie
-=======
-    if file.exists():
-        file.unlink()  # remove existing file
-    if cookie.exists():
-        cookie.unlink()  # remove existing cookie
->>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
 
     # Attempt file download
     out = "NUL" if platform.system() == "Windows" else "/dev/null"
@@ -154,21 +123,11 @@ def gdrive_download(id='16TiPfZj7htmTyhntwcZyEEAejOUxuT6m', file='tmp.zip'):
     else:  # small file
         s = f'curl -s -L -o {file} "drive.google.com/uc?export=download&id={id}"'
     r = os.system(s)  # execute, capture return
-<<<<<<< HEAD
     cookie.unlink(missing_ok=True)  # remove existing cookie
 
     # Error check
     if r != 0:
         file.unlink(missing_ok=True)  # remove partial
-=======
-    if cookie.exists():
-        cookie.unlink()  # remove existing cookie
-
-    # Error check
-    if r != 0:
-        if file.exists():
-            file.unlink()  # remove partial
->>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
         print('Download error ')  # raise Exception('Download error')
         return r
 

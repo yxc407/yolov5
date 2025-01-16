@@ -22,10 +22,6 @@ Usage - formats:
                                  yolov5s.pb                 # TensorFlow GraphDef
                                  yolov5s.tflite             # TensorFlow Lite
                                  yolov5s_edgetpu.tflite     # TensorFlow Edge TPU
-<<<<<<< HEAD
-=======
-                                 yolov5s_paddle_model       # PaddlePaddle
->>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
 """
 
 import argparse
@@ -35,10 +31,7 @@ import sys
 from pathlib import Path
 
 import torch
-<<<<<<< HEAD
 import torch.backends.cudnn as cudnn
-=======
->>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
 
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # YOLOv5 root directory
@@ -82,10 +75,6 @@ def run(
         hide_conf=False,  # hide confidences
         half=False,  # use FP16 half-precision inference
         dnn=False,  # use OpenCV DNN for ONNX inference
-<<<<<<< HEAD
-=======
-        vid_stride=1,  # video frame-rate stride
->>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
 ):
     source = str(source)
     save_img = not nosave and not source.endswith('.txt')  # save inference images
@@ -108,18 +97,11 @@ def run(
     # Dataloader
     if webcam:
         view_img = check_imshow()
-<<<<<<< HEAD
         cudnn.benchmark = True  # set True to speed up constant image size inference
         dataset = LoadStreams(source, img_size=imgsz, stride=stride, auto=pt)
         bs = len(dataset)  # batch_size
     else:
         dataset = LoadImages(source, img_size=imgsz, stride=stride, auto=pt)
-=======
-        dataset = LoadStreams(source, img_size=imgsz, stride=stride, auto=pt, vid_stride=vid_stride)
-        bs = len(dataset)  # batch_size
-    else:
-        dataset = LoadImages(source, img_size=imgsz, stride=stride, auto=pt, vid_stride=vid_stride)
->>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
         bs = 1  # batch_size
     vid_path, vid_writer = [None] * bs, [None] * bs
 
@@ -256,10 +238,6 @@ def parse_opt():
     parser.add_argument('--hide-conf', default=False, action='store_true', help='hide confidences')
     parser.add_argument('--half', action='store_true', help='use FP16 half-precision inference')
     parser.add_argument('--dnn', action='store_true', help='use OpenCV DNN for ONNX inference')
-<<<<<<< HEAD
-=======
-    parser.add_argument('--vid-stride', type=int, default=1, help='video frame-rate stride')
->>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
     opt = parser.parse_args()
     opt.imgsz *= 2 if len(opt.imgsz) == 1 else 1  # expand
     print_args(vars(opt))

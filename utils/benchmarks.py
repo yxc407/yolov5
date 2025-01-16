@@ -61,11 +61,7 @@ def run(
     device = select_device(device)
     for i, (name, f, suffix, cpu, gpu) in export.export_formats().iterrows():  # index, (name, file, suffix, CPU, GPU)
         try:
-<<<<<<< HEAD
             assert i not in (9, 10), 'inference not supported'  # Edge TPU and TF.js are unsupported
-=======
-            assert i not in (9, 10, 11), 'inference not supported'  # Edge TPU, TF.js and Paddle are unsupported
->>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
             assert i != 5 or platform.system() == 'Darwin', 'inference only supported on macOS>=10.13'  # CoreML
             if 'cpu' in device.type:
                 assert cpu, 'inference not supported on CPU'
@@ -96,21 +92,10 @@ def run(
     LOGGER.info('\n')
     parse_opt()
     notebook_init()  # print system info
-<<<<<<< HEAD
     c = ['Format', 'Size (MB)', 'mAP@0.5:0.95', 'Inference time (ms)'] if map else ['Format', 'Export', '', '']
     py = pd.DataFrame(y, columns=c)
     LOGGER.info(f'\nBenchmarks complete ({time.time() - t:.2f}s)')
     LOGGER.info(str(py if map else py.iloc[:, :2]))
-=======
-    c = ['Format', 'Size (MB)', 'mAP50-95', 'Inference time (ms)'] if map else ['Format', 'Export', '', '']
-    py = pd.DataFrame(y, columns=c)
-    LOGGER.info(f'\nBenchmarks complete ({time.time() - t:.2f}s)')
-    LOGGER.info(str(py if map else py.iloc[:, :2]))
-    if hard_fail and isinstance(hard_fail, str):
-        metrics = py['mAP50-95'].array  # values to compare to floor
-        floor = eval(hard_fail)  # minimum metric floor to pass, i.e. = 0.29 mAP for YOLOv5n
-        assert all(x > floor for x in metrics if pd.notna(x)), f'HARD FAIL: mAP50-95 < floor {floor}'
->>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
     return py
 
 
@@ -156,11 +141,7 @@ def parse_opt():
     parser.add_argument('--half', action='store_true', help='use FP16 half-precision inference')
     parser.add_argument('--test', action='store_true', help='test exports only')
     parser.add_argument('--pt-only', action='store_true', help='test PyTorch only')
-<<<<<<< HEAD
     parser.add_argument('--hard-fail', action='store_true', help='throw error on benchmark failure')
-=======
-    parser.add_argument('--hard-fail', nargs='?', const=True, default=False, help='Exception on error or < min metric')
->>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
     opt = parser.parse_args()
     opt.data = check_yaml(opt.data)  # check YAML
     print_args(vars(opt))

@@ -52,10 +52,6 @@ from utils.general import (LOGGER, check_amp, check_dataset, check_file, check_g
                            init_seeds, intersect_dicts, labels_to_class_weights, labels_to_image_weights, methods,
                            one_cycle, print_args, print_mutation, strip_optimizer, yaml_save)
 from utils.loggers import Loggers
-<<<<<<< HEAD
-=======
-from utils.loggers.comet.comet_utils import check_comet_resume
->>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
 from utils.loggers.wandb.wandb_utils import check_wandb_resume
 from utils.loss import ComputeLoss
 from utils.metrics import fitness
@@ -95,28 +91,17 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
     data_dict = None
     if RANK in {-1, 0}:
         loggers = Loggers(save_dir, weights, opt, hyp, LOGGER)  # loggers instance
-<<<<<<< HEAD
         if loggers.clearml:
             data_dict = loggers.clearml.data_dict  # None if no ClearML dataset or filled in by ClearML
         if loggers.wandb:
             data_dict = loggers.wandb.data_dict
             if resume:
                 weights, epochs, hyp, batch_size = opt.weights, opt.epochs, opt.hyp, opt.batch_size
-=======
->>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
 
         # Register actions
         for k in methods(loggers):
             callbacks.register_action(k, callback=getattr(loggers, k))
 
-<<<<<<< HEAD
-=======
-        # Process custom dataset artifact link
-        data_dict = loggers.remote_dataset
-        if resume:  # If resuming runs from remote artifact
-            weights, epochs, hyp, batch_size = opt.weights, opt.epochs, opt.hyp, opt.batch_size
-
->>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
     # Config
     plots = not evolve and not opt.noplots  # create plots
     cuda = device.type != 'cpu'
@@ -346,11 +331,7 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
                 mem = f'{torch.cuda.memory_reserved() / 1E9 if torch.cuda.is_available() else 0:.3g}G'  # (GB)
                 pbar.set_description(('%11s' * 2 + '%11.4g' * 5) %
                                      (f'{epoch}/{epochs - 1}', mem, *mloss, targets.shape[0], imgs.shape[-1]))
-<<<<<<< HEAD
                 callbacks.run('on_train_batch_end', model, ni, imgs, targets, paths)
-=======
-                callbacks.run('on_train_batch_end', model, ni, imgs, targets, paths, list(mloss))
->>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
                 if callbacks.stop_training:
                     return
             # end batch ------------------------------------------------------------------------------------------------
@@ -485,19 +466,11 @@ def parse_opt(known=False):
     parser.add_argument('--seed', type=int, default=0, help='Global training seed')
     parser.add_argument('--local_rank', type=int, default=-1, help='Automatic DDP Multi-GPU argument, do not modify')
 
-<<<<<<< HEAD
     # Weights & Biases arguments
     parser.add_argument('--entity', default=None, help='W&B: Entity')
     parser.add_argument('--upload_dataset', nargs='?', const=True, default=False, help='W&B: Upload data, "val" option')
     parser.add_argument('--bbox_interval', type=int, default=-1, help='W&B: Set bounding-box image logging interval')
     parser.add_argument('--artifact_alias', type=str, default='latest', help='W&B: Version of dataset artifact to use')
-=======
-    # Logger arguments
-    parser.add_argument('--entity', default=None, help='Entity')
-    parser.add_argument('--upload_dataset', nargs='?', const=True, default=False, help='Upload data, "val" option')
-    parser.add_argument('--bbox_interval', type=int, default=-1, help='Set bounding-box image logging interval')
-    parser.add_argument('--artifact_alias', type=str, default='latest', help='Version of dataset artifact to use')
->>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
 
     return parser.parse_known_args()[0] if known else parser.parse_args()
 
@@ -509,13 +482,8 @@ def main(opt, callbacks=Callbacks()):
         check_git_status()
         check_requirements()
 
-<<<<<<< HEAD
     # Resume
     if opt.resume and not (check_wandb_resume(opt) or opt.evolve):  # resume from specified or most recent last.pt
-=======
-    # Resume (from specified or most recent last.pt)
-    if opt.resume and not check_wandb_resume(opt) and not check_comet_resume(opt) and not opt.evolve:
->>>>>>> fb8ef3e1e5de480acb34f06cf92d0de2a3a59abe
         last = Path(check_file(opt.resume) if isinstance(opt.resume, str) else get_latest_run())
         opt_yaml = last.parent.parent / 'opt.yaml'  # train options yaml
         opt_data = opt.data  # original dataset
